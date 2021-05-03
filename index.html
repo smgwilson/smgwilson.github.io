@@ -22,7 +22,7 @@
               
               const obsoleteDevice = modelValue < TRIGGER_MODEL_VALUE;
               const canUpgradeDevice = modelValue > TRIGGER_MODEL_VALUE && OSMajorVersion <= TRIGGER_OS_VALUE;
-              const upgradedDevice = OSMajorVersion > TRIGGER_OS_VALUE && OSMajorVersion > TRIGGER_OS_VALUE;
+              const upgradedDevice = OSMajorVersion > TRIGGER_OS_VALUE;
               const undeterminedDevice = modelValue === TRIGGER_MODEL_VALUE && OSMajorVersion <= TRIGGER_OS_VALUE;
 
               if (obsoleteDevice) {

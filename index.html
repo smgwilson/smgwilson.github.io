@@ -22,7 +22,7 @@
               
               const obsoleteDevice = modelValue < TRIGGER_MODEL_VALUE;
               const canUpgradeDevice = modelValue > TRIGGER_MODEL_VALUE && OSMajorVersion <= TRIGGER_OS_VALUE;
-              const upgradedDevice = OSMajorVersion > TRIGGER_OS_VALUE;
+              const upgradedDevice = OSMajorVersion > TRIGGER_OS_VALUE && OSMajorVersion > TRIGGER_OS_VALUE;
               const undeterminedDevice = modelValue === TRIGGER_MODEL_VALUE && OSMajorVersion <= TRIGGER_OS_VALUE;
 
               if (obsoleteDevice) {
@@ -38,7 +38,7 @@
                 // should return iPhone 6s and greater running OS 14;
                 return "PoC-iOS New Device Message to upgrade. FPO";
               } else {
-                return "";
+                return "Unknown model";
               }
             };  
 

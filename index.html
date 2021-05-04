@@ -208,21 +208,6 @@
             }
         };
 
-        function populateUI () {
-            // nodes
-            const messageNode = document.getElementById("message");
-            const androidDownloadNode = document.getElementById("android-download");
-            const iOSDownloadNode = document.getElementById("iOS-download");
-            const iOSModelSelection = document.getElementById("model-selection");
-
-            iOSDownloadNode.style.display = "none";
-            androidDownloadNode.style.display = "inline";
-            androidDownloadNode.style.display = "inline";
-            iOSModelSelection.style.display = "none";
-            
-            messageNode.innerHTML = "PoC-Android Generic Message. FPO";
-            androidDownloadNode.innerHTML = "Download Android";
-        }
 
         function getDeviceDetails() {
             const agent = navigator.userAgent;
@@ -233,8 +218,9 @@
 
             // nodes
             const messageNode = document.getElementById("message");
-            const androidDownloadNode = document.getElementById("android-download");
-            const iOSDownloadNode = document.getElementById("iOS-download");
+            const downloadNode = document.getElementById("download");
+            const androidDownloadNode = document.getElementById("download-android");
+            const iOSDownloadNode = document.getElementById("download-iOS");
             const iOSModelSelection = document.getElementById("model-selection");
 
             if (isIOS) {      
@@ -253,7 +239,7 @@
                   // An unknown model could be 6, 6s, 7, or 8, but we know it's above 6 if the OS is upgraded. 
                     if (unknownModel && !currentModel) { 
                       messageNode.style.display = "";
-                      iOSDownloadNode.style.display = "none";
+                      downloadNode.style.display = "none";
                       iOSModelSelection.style.display = "block";
                     } else if (unknownModel && currentModel) {
                       messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";
@@ -282,7 +268,6 @@
                 iOSDownloadNode.style.display = "none";
                 iOSModelSelection.style.display = "none";
                 androidDownloadNode.style.display = "inline";
-         
             } else {
                 messageNode.innerHTML = "PoC-Generic error. FPO";
                 androidDownloadNode.innerHTML = "Download Walmart for Android";
@@ -296,11 +281,11 @@
         function showHide (id) {
             if (id === "current") {
                 document.getElementById("message").innerHTML = "PoC-iOS New Device Message to upgrade. FPO"
-                document.getElementById("iOS-download").style.display = "inline"; 
-                document.getElementById("iOS-download").innerHTML = "Download Walmart";    
+                document.getElementById("download-iOS").style.display = "inline";
+                document.getElementById("download-iOS").innerHTML = "Download Walmart";
             } else {
                 document.getElementById("message").innerHTML  = "PoC- iOS Old Device Message.FPO";
-                document.getElementById("iOS-download").style.display = "none";
+                document.getElementById("download-iOS").style.display = "none";
             }
         }
     </script>
@@ -308,18 +293,18 @@
 
 <body onload="getDeviceDetails()">
     <section id="model-selection">
-    <p>Pleas select your iPhone model: </p>
+    <p>Please select your iPhone model: </p>
       <input type="radio" id="current" name="model" value="6sPlus" onclick="showHide(id)">
         <label for="6sPlus">iPhone 6+/iPhone 7 or newer</label><br>
       <input type="radio" id="obsolete" name="model" value="LessThan6" onclick="showHide(id)">
         <label for="LessThan6">Older than iPhone 6+/iPhone 7</label><br>
     </section>
     <p id="message"></p>
-    <section> 
+    <section id="download">
         <div>
             <a
               href="https://play.google.com/store/apps/details?id=com.walmart.android" 
-              id="android-download"
+              id="download-android"
               rel="noopener noreferrer"
               target="_blank" >
             </a>
@@ -327,7 +312,7 @@
         <div>
             <a 
               href="https://apps.apple.com/us/app/walmart-shopping-grocery/id338137227" 
-              id="iOS-download"
+              id="download-iOS"
               rel="noopener noreferrer"
               target="_blank" >
             </a>

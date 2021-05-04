@@ -17,6 +17,11 @@
             return !(/iPad/i.test(ua));
         }
 
+        function getiPhoneMessage (OS) {
+          const OS_TRIGGER_VALUE = 12;
+          return iPhoneMessage = OS > OS_TRIGGER_VALUE ? "PoC-iOS New Device Message to upgrade. FPO" : "Select your iPhone model: ";
+        };
+
         function getiPhoneModelWebGl() {
             // Create a canvas element which can be used to retrieve information about the GPU.
             const canvas = document.createElement("canvas");
@@ -31,7 +36,7 @@
 
             const displayTypes = {
                 OBSOLETE: "PoC- iOS Old Device Message.FPO",
-                UNDETERMINED: "Need radio buttons for this case",
+                UNDETERMINED: "undetermined",
                 CURRENT: "PoC-iOS New Device Message to upgrade. FPO",
                 UNKNOWN: "Unknown model"
 
@@ -243,7 +248,8 @@
                     console.log("screenPixels", window.devicePixelRatio);
 
                     modelInfoNode.innerHTML = modelInfo.type;
-                    messageNode.innerHTML = modelInfo.message;
+                    const modelInfoMessage = modelInfo.message === "undetermined" ? getiPhoneMessage(iOSVersion[0]) : modelInfo.message;
+                    messageNode.innerHTML = modelInfoMessage;
                 } else {
                     modelNode.style.display = "none";
                     messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";

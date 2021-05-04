@@ -17,11 +17,6 @@
             return !(/iPad/i.test(ua));
         }
 
-        function getiPhoneMessage (OS) {
-          const OS_TRIGGER_VALUE = 12;
-          return iPhoneMessage = OS > OS_TRIGGER_VALUE ? "PoC-iOS New Device Message to upgrade. FPO" : "Select your iPhone model: ";
-        };
-
         function getiPhoneModelWebGl() {
             // Create a canvas element which can be used to retrieve information about the GPU.
             const canvas = document.createElement("canvas");
@@ -213,113 +208,116 @@
             }
         };
 
-        function getDeviceDetails() {
-            const agent = navigator.userAgent;
-            const agentString = "User-agent header sent: " + agent;
-            document.getElementById("demo").innerHTML = agentString;
-            // logic constants
-            const isAndroid = !!agent.match(/Android/i);
-            const isIOS = !!agent.match(/iP(hone|ad)/i);
-            let message;
+        function populateUI () {
             // nodes
-            const iOSSpecificNode = document.getElementById("ios-specific");
-            const deviceInfoNode = document.getElementById("device");
-            const deviceTypeInfoNode = document.getElementById("device-type");
-            const osVersionInfoNode = document.getElementById("version")
-            const modelInfoNode = document.getElementById("model");
-            const modelNode = document.getElementById("model-info");
             const messageNode = document.getElementById("message");
             const androidDownloadNode = document.getElementById("android-download");
             const iOSDownloadNode = document.getElementById("iOS-download");
+            const iOSModelSelection = document.getElementById("model-selection");
 
-            if (isIOS) {
-                iOSSpecificNode.style.display = "block";
+            iOSDownloadNode.style.display = "none";
+            androidDownloadNode.style.display = "inline";
+            androidDownloadNode.style.display = "inline";
+            iOSModelSelection.style.display = "none";
+            
+            messageNode.innerHTML = "PoC-Android Generic Message. FPO";
+            androidDownloadNode.innerHTML = "Download Android";
+        }
+
+        function getDeviceDetails() {
+            const agent = navigator.userAgent;
+            console.log("agent", agent);
+            // logic constants
+            const isAndroid = !!agent.match(/Android/i);
+            const isIOS = !!agent.match(/iP(hone|ad)/i);
+
+            // nodes
+            const messageNode = document.getElementById("message");
+            const androidDownloadNode = document.getElementById("android-download");
+            const iOSDownloadNode = document.getElementById("iOS-download");
+            const iOSModelSelection = document.getElementById("model-selection");
+
+            if (isIOS) {      
+                iOSModelSelection.style.display = "none";
+                androidDownloadNode.style.display = "none";
+
                 const iOSVersion = getIOSVersion(agent);
                 console.log("iOSVersion", iOSVersion);
                 const isiPhone = getIsIphone(agent);
                 console.log("isIPhone", isiPhone);
                 if (isiPhone) {
-                    modelNode.style.display = "block";
-                    const modelInfo = getiPhoneModelWebGl();
-
-                    console.log("modelInfo", modelInfo);
-                    console.log("screenHeight", window.screen.height);
-                    console.log("screenWidth", window.screen.width);
-                    console.log("screenPixels", window.devicePixelRatio);
-
-                    modelInfoNode.innerHTML = modelInfo.type;
-                    const modelInfoMessage = modelInfo.message === "undetermined" ? getiPhoneMessage(iOSVersion[0]) : modelInfo.message;
-                    messageNode.innerHTML = modelInfoMessage;
+                  OS_TRIGGER_VALUE = 12;
+                  const modelInfo = getiPhoneModelWebGl();
+                  const currentModel = iOSVersion[0] > OS_TRIGGER_VALUE;
+                  const unknownModel = modelInfo.message === "undetermined";
+                  // An unknown model could be 6, 6s, 7, or 8, but we know it's above 6 if the OS is upgraded. 
+                    if (unknownModel && !currentModel) { 
+                      messageNode.innerHTML = "Select your iPhone model: ";
+                      iOSDownloadNode.style.display = "none";
+                      iOSModelSelection.style.display = "block";
+                    } else if (unknownModel && currentModel) {
+                      messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";
+                      iOSModelSelection.style.display = "none"; 
+                      iOSDownloadNode.style.display = "inline";
+                      iOSDownloadNode.innerHTML = "Download Walmart";
+                    } else if (currentModel && !unknownModel) {
+                      messageNode.innerHTML = modelInfo.message;
+                      iOSModelSelection.style.display = "none"; 
+                      iOSDownloadNode.style.display = "inline";
+                      iOSDownloadNode.innerHTML = "Download Walmart";
+                    }else {
+                      messageNode.innerHTML = modelInfo.message;
+                      iOSModelSelection.style.display = "none"; 
+                      iOSDownloadNode.style.display = "none";
+                    }
                 } else {
-                    modelNode.style.display = "none";
                     messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";
+                    androidDownloadNode.style.display = "none";
+                    iOSDownloadNode.innerHTML = "Download Walmart";
+                    iOSDownloadNode.style.display = "inline";
                 }
-                deviceInfoNode.innerHTML = "iOS";
-                deviceTypeInfoNode.innerHTML = isiPhone;
-                osVersionInfoNode.innerHTML = iOSVersion;
-                androidDownloadNode.style.display = "none";
-                iOSDownloadNode.innerHTML = "Download Walmart";
-                iOSDownloadNode.style.display = "inline";
-
             } else if (isAndroid) {
-                iOSSpecificNode.style.display = "none";
-                deviceInfoNode.innerHTML = "Android";
-                deviceTypeInfoNode.innerHTML = "";
-                osVersionInfoNode.innerHTML = "";
-                modelInfoNode.innerHTML = "";
                 messageNode.innerHTML = "PoC-Android Generic Message. FPO";
                 androidDownloadNode.innerHTML = "Download Android";
                 iOSDownloadNode.style.display = "none";
+                iOSModelSelection.style.display = "none";
                 androidDownloadNode.style.display = "inline";
+         
             } else {
-                iOSSpecificNode.style.display = "none";
-                deviceInfoNode.innerHTML = "unknown device";
-                deviceTypeInfoNode.innerHTML = "";
-                osVersionInfoNode.innerHTML = "";
-                modelInfoNode.innerHTML = "";
                 messageNode.innerHTML = "PoC-Generic error. FPO";
                 androidDownloadNode.innerHTML = "Download Walmart for Android";
                 iOSDownloadNode.innerHTML = "Download Walmart for iOS";
                 iOSDownloadNode.style.display = "inline";
                 androidDownloadNode.style.display = "inline";
+                iOSModelSelection.style.display = "none";
             }
         }
     </script>
 </head>
 
 <body onload="getDeviceDetails()">
-    <section>
-        <p id="demo"></p>
-        <p>
-            <label>Device: </label>
-            <span id="device"></span>
-        </p>
-        <div id="ios-specific">
-            <p>
-                <label>iPhone?: </label>
-                <span id="device-type"></span>
-            </p>
-            <p>
-                <label>OS Version: </label>
-                <span id="version"></span>
-            </p>
-            <p id="model-info">
-                <label>iPhone Model: </label>
-                <span id="model"></span>
-            </p>
-        </div>
+    <p id="message"></p>
+    <section id="model-selection">
+      <input type="radio" id="current" name="model" value="6sPlus">
+        <label for="6sPlus">iPhone 6+/iPhone 7 or newer</label><br>
+      <input type="radio" id="obsolete" name="model" value="LessThan6">
+        <label for="LessThan6">Older than iPhone 6+/iPhone 7</label><br>
     </section>
-    <hr />
-    <section>
-        <p id="message"></p>
+    <section> 
         <div>
-            <a href="https://play.google.com/store/apps/details?id=com.walmart.android" id="android-download"
-                target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://play.google.com/store/apps/details?id=com.walmart.android" 
+              id="android-download"
+              rel="noopener noreferrer"
+              target="_blank" >
             </a>
         </div>
         <div>
-            <a href="https://apps.apple.com/us/app/walmart-shopping-grocery/id338137227" id="iOS-download"
-                target="_blank" rel="noopener noreferrer">
+            <a 
+              href="https://apps.apple.com/us/app/walmart-shopping-grocery/id338137227" 
+              id="iOS-download"
+              rel="noopener noreferrer"
+              target="_blank" >
             </a>
         </div>
     </section>

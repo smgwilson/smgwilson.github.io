@@ -2,10 +2,39 @@
 <html lang="en-US">
 
 <head>
+    <style>
+        .link-button {
+            background: #ffffff none repeat scroll 0 0;
+            border: 2px solid #06084e;
+            color: #406383;
+            outline: medium none;
+            padding: 15px;
+            text-decoration: none;
+        }
+
+        .link-button:hover {
+            Background-color: #236280;
+            Color: #ffffff;
+        }
+
+        .message-style {
+            margin-bottom: 30px;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Device Tester</title>
     <script>
+        const deviceStatus = {
+            OBSOLETE: "obsolete",
+            UNDETERMINED: "undetermined",
+            CURRENT: "current",
+            UNKNOWN: "unknown"
+        };
+
+        // lowest supported IOS major release
+        const OS_TRIGGER_VALUE = 12;
+
         function getIOSVersion(ua) {
             if (/iP(hone|ad)/i.test(ua)) {
                 return ua.match(/OS [\d_]+/i)[0].substr(3).split('_').map(n => parseInt(n));
@@ -26,43 +55,36 @@
 
             const displayValues = {
                 type: "",
-                message: ""
+                status: ""
             };
 
-            const displayTypes = {
-                OBSOLETE: "PoC- iOS Old Device Message.FPO",
-                UNDETERMINED: "undetermined",
-                CURRENT: "PoC-iOS New Device Message to upgrade. FPO",
-                UNKNOWN: "Unknown model"
-
-            };
             // iPhone 12
             if ((window.screen.height / window.screen.width === 926 / 428) && (window.devicePixelRatio === 3)) {
                 displayValues.type = "iPhone 12 Pro Max";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
             } else if ((window.screen.height / window.screen.width === 844 / 390) && (window.devicePixelRatio === 3)) {
                 displayValues.type = "iPhone 12 or 12 Pro";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
             } else if ((window.screen.height / window.screen.width === 780 / 360) && (window.devicePixelRatio === 3)) {
                 displayValues.type = "iPhone 12 Mini";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
             }
             // iPhone 11
             else if ((window.screen.height / window.screen.width === 896 / 414) && (window.devicePixelRatio === 3)) {
                 displayValues.type = "iPhone 11 Pro Max or Xs Max";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
             } else if ((window.screen.height / window.screen.width === 896 / 414) && (window.devicePixelRatio === 2)) {
                 displayValues.type = "iPhone 11 or XR";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
                 // iPhone X
             } else if ((window.screen.height / window.screen.width === 812 / 375) && (window.devicePixelRatio === 3)) {
                 displayValues.type = "iPhone 11 Pro, X or Xs";
-                displayValues.message = displayTypes['CURRENT'];
+                displayValues.status = deviceStatus.CURRENT;
                 return displayValues;
             }
             // iPhone 6+/6s+/7+ and 8+
@@ -70,23 +92,23 @@
                 switch (renderer) {
                     case "Apple A8 GPU":
                         displayValues.type = "iPhone 6 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A9 GPU":
                         displayValues.type = "iPhone 6s Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A10 GPU":
                         displayValues.type = "iPhone 7 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A11 GPU":
                         displayValues.type = "iPhone 8 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 6 Plus, 6s Plus, 7 Plus or 8 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                 }
                 // iPhone 6+/6s+/7+ and 8+ in zoom mode
@@ -94,23 +116,23 @@
                 switch (renderer) {
                     case "Apple A8 GPU":
                         displayValues.type = "iPhone 6 Plus (display zoom)";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A9 GPU":
                         displayValues.type = "iPhone 6s Plus (display zoom)";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A10 GPU":
                         displayValues.type = "iPhone 7 Plus (display zoom)";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     case "Apple A11 GPU":
                         displayValues.type = "iPhone 6 Plus, 6s Plus, 7 Plus or 8 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 6 Plus, 6s Plus, 7 Plus or 8 Plus";
-                        displayValues.message = displayTypes['CURRENT'];
+                        displayValues.status = deviceStatus.CURRENT;
                         return displayValues;
                 }
                 // iPhone 6/6s/7 and 8
@@ -118,23 +140,23 @@
                 switch (renderer) {
                     case "Apple A8 GPU":
                         displayValues.type = "iPhone 6";
-                        displayValues.message = displayTypes['UNDETERMINED'];
+                        displayValues.status = deviceStatus.UNDETERMINED;
                         return displayValues;
                     case "Apple A9 GPU":
                         displayValues.type = "iPhone 6s";
-                        displayValues.message = displayTypes['UNDETERMINED'];
+                        displayValues.status = deviceStatus.UNDETERMINED;
                         return displayValues;
                     case "Apple A10 GPU":
                         displayValues.type = "iPhone 7";
-                        displayValues.message = displayTypes['UNDETERMINED'];
+                        displayValues.status = deviceStatus.UNDETERMINED;
                         return displayValues;
                     case "Apple A11 GPU":
                         displayValues.type = "iPhone 8";
-                        displayValues.message = displayTypes['UNDETERMINED'];
+                        displayValues.status = deviceStatus.UNDETERMINED;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 6, 6s, 7 or 8";
-                        displayValues.message = displayTypes['UNDETERMINED'];
+                        displayValues.status = deviceStatus.UNDETERMINED;
                         return displayValues;
                 }
                 // iPhone 5/5C/5s/SE or 6/6s/7 and 8 in zoom mode
@@ -142,31 +164,31 @@
                 switch (renderer) {
                     case "PowerVR SGX 543":
                         displayValues.type = "iPhone 5 or 5c";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "Apple A7 GPU":
                         displayValues.type = "iPhone 5s";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "Apple A8 GPU":
                         displayValues.type = "iPhone 6 (display zoom)";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "Apple A9 GPU":
                         displayValues.type = "iPhone SE or 6s (display zoom)";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "Apple A10 GPU":
                         displayValues.type = "iPhone 7 (display zoom)";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "Apple A11 GPU":
                         displayValues.type = "iPhone 8 (display zoom)";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 5, 5C, 5S, SE or 6, 6s, 7 and 8 (display zoom)";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                 }
                 // iPhone 4/4s
@@ -174,15 +196,15 @@
                 switch (renderer) {
                     case "PowerVR SGX 535":
                         displayValues.type = "iPhone 4";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "PowerVR SGX 543":
                         displayValues.type = "iPhone 4s";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 4 or 4s";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                 }
                 // iPhone 1/3G/3GS
@@ -190,24 +212,40 @@
                 switch (renderer) {
                     case "ALP0298C05":
                         displayValues.type = "iPhone 3GS";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     case "S5L8900":
                         displayValues.type = "iPhone 1, 3G";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                     default:
                         displayValues.type = "iPhone 1, 3G or 3GS";
-                        displayValues.message = displayTypes['OBSOLETE'];
+                        displayValues.status = deviceStatus.OBSOLETE;
                         return displayValues;
                 }
             } else {
                 displayValues.type = "Unknown";
-                displayValues.message = displayTypes['UNKNOWN'];
+                displayValues.status = deviceStatus.UNKNOWN;
                 return displayValues;
             }
         };
 
+        function getMessage(device, deviceStatus) {
+            let message;
+            if (device === "android") {
+                message = "PoC-Android Generic Message. FPO";
+            }
+            if (device === "generic") {
+                message = "PoC-Generic error. FPO";
+            }
+            if (device === "iOS" && deviceStatus === "current") {
+                message = "PoC-iOS New Device Message to upgrade. FPO"
+            }
+            if (device === "iOS" && deviceStatus === "obsolete") {
+                message = "PoC-iOS Old Device Message. FPO"
+            }
+            return message;
+        }
 
         function getDeviceDetails() {
             const agent = navigator.userAgent;
@@ -222,71 +260,80 @@
             const androidDownloadNode = document.getElementById("download-android");
             const iOSDownloadNode = document.getElementById("download-iOS");
             const iOSModelSelection = document.getElementById("model-selection");
+            const displayiOSNode = document.getElementById("show-hide-ios");
+            const displayAndroidNode = document.getElementById("show-hide-android");
 
-            if (isIOS) {      
+            if (isIOS) {
                 iOSModelSelection.style.display = "none";
-                androidDownloadNode.style.display = "none";
+                displayAndroidNode.style.display = "none";
+                let iOSVersion;
+                try {
+                    iOSVersion = getIOSVersion(agent);
+                } catch (error) {
+                    messageNode.innerHTML = "Error: unable to evaluate OS from user-agent";
+                }
 
-                const iOSVersion = getIOSVersion(agent);
                 console.log("iOSVersion", iOSVersion);
                 const isiPhone = getIsIphone(agent);
                 console.log("isIPhone", isiPhone);
                 if (isiPhone) {
-                  OS_TRIGGER_VALUE = 12;
-                  const modelInfo = getiPhoneModelWebGl();
-                  const currentModel = iOSVersion[0] > OS_TRIGGER_VALUE;
-                  const unknownModel = modelInfo.message === "undetermined";
-                  // An unknown model could be 6, 6s, 7, or 8, but we know it's above 6 if the OS is upgraded. 
-                    if (unknownModel && !currentModel) { 
-                      messageNode.style.display = "";
-                      downloadNode.style.display = "none";
-                      iOSModelSelection.style.display = "block";
-                    } else if (unknownModel && currentModel) {
-                      messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";
-                      iOSModelSelection.style.display = "none"; 
-                      iOSDownloadNode.style.display = "inline";
-                      iOSDownloadNode.innerHTML = "Download Walmart";
-                    } else if (currentModel && !unknownModel) {
-                      messageNode.innerHTML = modelInfo.message;
-                      iOSModelSelection.style.display = "none"; 
-                      iOSDownloadNode.style.display = "inline";
-                      iOSDownloadNode.innerHTML = "Download Walmart";
-                    }else {
-                      messageNode.innerHTML = modelInfo.message;
-                      iOSModelSelection.style.display = "none"; 
-                      iOSDownloadNode.style.display = "none";
+                    const isCurrentModel = iOSVersion[0] > OS_TRIGGER_VALUE;
+                    const modelInfo = getiPhoneModelWebGl();
+                    console.log("model info", modelInfo);
+                    // An undetermined iPhone model could be 6, 6s, 7, or 8, but we know it's above 6 if the OS is upgraded.
+                    const isUndeterminedModel = modelInfo.status === "undetermined" || modelInfo.status === "unknown";
+                    if (isUndeterminedModel && !isCurrentModel) { // show radio buttons for user selection
+                        messageNode.style.display = "none";
+                        downloadNode.style.display = "none";
+                        iOSModelSelection.style.display = "block";
+                    } else if (isCurrentModel) { // iPhones that we either know are current models or that have an upgraded OS
+                        messageNode.innerHTML = isUndeterminedModel ? getMessage("iOS", "current") : getMessage("iOS", modelInfo.status);
+                        iOSDownloadNode.innerHTML = "Download Walmart";
+                        iOSModelSelection.style.display = "none";
+                        displayiOSNode.style.display = "inline";
+                    } else { // obsolete iPhones
+                        messageNode.innerHTML = getMessage("iOS", modelInfo.status);
+                        iOSModelSelection.style.display = "none";
+                        displayiOSNode.style.display = "none";
                     }
-                } else {
-                    messageNode.innerHTML = "PoC-iOS New Device Message to upgrade. FPO";
-                    androidDownloadNode.style.display = "none";
+                } else { // block for iPads - iOS but not iPhone
+                    messageNode.innerHTML = getMessage("iOS", "current");
                     iOSDownloadNode.innerHTML = "Download Walmart";
-                    iOSDownloadNode.style.display = "inline";
+                    androidDownloadNode.style.display = "none";
+                    displayiOSNode.style.display = "inline";
                 }
             } else if (isAndroid) {
-                messageNode.innerHTML = "PoC-Android Generic Message. FPO";
+                messageNode.innerHTML = getMessage("android");
                 androidDownloadNode.innerHTML = "Download Android";
-                iOSDownloadNode.style.display = "none";
+                displayiOSNode.style.display = "none";
                 iOSModelSelection.style.display = "none";
-                androidDownloadNode.style.display = "inline";
-            } else {
-                messageNode.innerHTML = "PoC-Generic error. FPO";
+                displayAndroidNode.style.display = "inline";
+            } else { // Windows, Blackberry, etc
+                messageNode.innerHTML = getMessage("generic");
                 androidDownloadNode.innerHTML = "Download Walmart for Android";
                 iOSDownloadNode.innerHTML = "Download Walmart for iOS";
-                iOSDownloadNode.style.display = "inline";
-                androidDownloadNode.style.display = "inline";
+                displayiOSNode.style.display = "inline";
+                displayAndroidNode.style.display = "inline";
                 iOSModelSelection.style.display = "none";
             }
         }
 
-        function showHide (id) {
+        function selectiPhoneModel(id) {
+            const messageNode = document.getElementById("message");
+            const downloadNode = document.getElementById("download");
+            const iOSDownloadNode = document.getElementById("download-iOS");
+            const displayiOSNode = document.getElementById("show-hide-ios");
+
             if (id === "current") {
-                document.getElementById("message").innerHTML = "PoC-iOS New Device Message to upgrade. FPO"
-                document.getElementById("download").style.display = "block";
-                document.getElementById("download-iOS").style.display = "inline";
-                document.getElementById("download-iOS").innerHTML = "Download Walmart";
+                messageNode.innerHTML = getMessage("iOS", "current");
+                iOSDownloadNode.innerHTML = "Download Walmart";
+                messageNode.style.display = "block";
+                downloadNode.style.display = "block";
+                displayiOSNode.style.display = "inline";
             } else {
-                document.getElementById("message").innerHTML  = "PoC- iOS Old Device Message.FPO";
-                document.getElementById("download-iOS").style.display = "none";
+                messageNode.innerHTML = getMessage("iOS", "obsolete");
+                messageNode.style.display = "block";
+                displayiOSNode.style.display = "none";
             }
         }
     </script>
@@ -294,28 +341,22 @@
 
 <body onload="getDeviceDetails()">
     <section id="model-selection">
-    <p>Please select your iPhone model: </p>
-      <input type="radio" id="current" name="model" value="6sPlus" onclick="showHide(id)">
+        <p>Please select your iPhone model: </p>
+        <input type="radio" id="current" name="model" value="6sPlus" onclick="selectiPhoneModel(id)">
         <label for="6sPlus">iPhone 6+/iPhone 7 or newer</label><br>
-      <input type="radio" id="obsolete" name="model" value="LessThan6" onclick="showHide(id)">
+        <input type="radio" id="obsolete" name="model" value="LessThan6" onclick="selectiPhoneModel(id)">
         <label for="LessThan6">Older than iPhone 6+/iPhone 7</label><br>
     </section>
-    <p id="message"></p>
+    <p class="message-style" id="message"></p>
     <section id="download">
-        <div>
-            <a
-              href="https://play.google.com/store/apps/details?id=com.walmart.android" 
-              id="download-android"
-              rel="noopener noreferrer"
-              target="_blank" >
+        <div id="show-hide-android">
+            <a class="link-button" href="https://play.google.com/store/apps/details?id=com.walmart.android"
+                id="download-android" rel="noopener noreferrer" target="_blank">
             </a>
         </div>
-        <div>
-            <a 
-              href="https://apps.apple.com/us/app/walmart-shopping-grocery/id338137227" 
-              id="download-iOS"
-              rel="noopener noreferrer"
-              target="_blank" >
+        <div id="show-hide-ios">
+            <a class="link-button" href="https://apps.apple.com/us/app/walmart-shopping-grocery/id338137227"
+                id="download-iOS" rel="noopener noreferrer" target="_blank">
             </a>
         </div>
     </section>
